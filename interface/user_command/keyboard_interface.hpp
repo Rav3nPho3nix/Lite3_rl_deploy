@@ -105,7 +105,7 @@ public:
 
                     break;
                     case RobotMotionState::RLControlMode:
-                        if(input=='w') {
+                        if(input=='z') {
                             usr_cmd_.forward_vel_scale+=AXIS_STEP;
                             forward_time_record = current_time;
                         }  
@@ -114,7 +114,7 @@ public:
                             forward_time_record = current_time;
                         }
 
-                        if(input=='a') {
+                        if(input=='q') {
                             usr_cmd_.side_vel_scale+=AXIS_STEP;
                             side_time_record = current_time;
                         }
@@ -123,7 +123,7 @@ public:
                             side_time_record = current_time;
                         }
                         
-                        if(input=='q') {
+                        if(input=='a') {
                             usr_cmd_.turnning_vel_scale+=AXIS_STEP;
                             turnning_time_record = current_time;
                         }
