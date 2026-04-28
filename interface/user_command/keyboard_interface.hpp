@@ -98,6 +98,11 @@ public:
                         if(input=='c'){
                             usr_cmd_.target_mode = int(RobotMotionState::RLControlMode);
                         }
+                        // Si on passe en "dire bonjour" depuis debout
+                        else if (input == 'h') {
+                            usr_cmd_.target_mode = int(RobotMotionState::SayHello);
+                        }
+
                     break;
                     case RobotMotionState::RLControlMode:
                         if(input=='w') {
