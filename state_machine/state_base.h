@@ -27,6 +27,10 @@ struct ControllerData{
     std::shared_ptr<UserCommandInterface> uc_ptr;
     std::shared_ptr<ControlParameters> cp_ptr;
     std::shared_ptr<DataStreaming> ds_ptr;
+
+    // Ajout de l'information sur l'etat precedent
+    // kInvalid par defaut
+    StateName previous_state = StateName::kInvalid;
 };
 
 

@@ -138,6 +138,9 @@ public:
     }
     virtual StateName GetNextStateName() {
         if(run_time_ - time_stamp_record_ <= 2.*stand_duration_){
+            // Stockage de l'information de l'etat actuel
+            data_ptr_->previous_state = StateName::kStandUp;
+
             return StateName::kStandUp;
         }else{
 

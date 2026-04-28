@@ -133,6 +133,14 @@ public:
     }
 
     virtual StateName GetNextStateName() {
+        // Si on souhaite entrer dans le mode "dire bonjour"
+        if(uc_ptr_->GetUserCommand().target_mode == int(RobotMotionState::SayHello)){
+            std::cout << "Switching to 'Say Hello' state" << std::endl;
+            // Stockage de l'information de l'etat actuel
+            data_ptr_->previous_state = StateName::kRLControl;
+            return StateName::kSayHello;
+        }
+        // Sinon on reste en RL
         return StateName::kRLControl;
     }
 };
