@@ -23,6 +23,9 @@ namespace types{
         kJointDamping = 2,
 
         kRLControl    = 6,
+
+        // Etat du "dire bonjour"
+        kSayHello = 7,
     };
     
 

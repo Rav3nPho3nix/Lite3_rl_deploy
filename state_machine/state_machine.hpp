@@ -48,6 +48,9 @@ private:
     std::shared_ptr<StateBase> rl_controller_;
     std::shared_ptr<StateBase> joint_damping_controller_;
 
+    // Pointeur de mon etat de "dire bonjour"
+    std::shared_ptr<StateBase> say_hello_controller_;
+
     StateName current_state_name_, next_state_name_;
 
     std::shared_ptr<UserCommandInterface> uc_ptr_;
@@ -103,6 +106,13 @@ private:
             case StateName::kJointDamping:{
                 return joint_damping_controller_;
             }
+
+            // Switch vers l'etat "dire bonjour"
+            case StateName::kSayHello:{
+                return say_hello_controller_;
+            }
+
+
             default:{
                 std::cerr << "error state name" << std::endl;
             }
