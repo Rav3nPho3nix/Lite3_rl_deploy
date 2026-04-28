@@ -138,23 +138,8 @@ public:
     }
     virtual StateName GetNextStateName() {
         if(run_time_ - time_stamp_record_ <= 2.*stand_duration_){
-            // Stockage de l'information de l'etat actuel
-            data_ptr_->previous_state = StateName::kStandUp;
-
             return StateName::kStandUp;
         }else{
-
-            // // DEBUG
-            // std::cout << uc_ptr_->GetUserCommand().target_mode << std::endl;
-
-            // Si on souhaite entrer dans le "dire bonjour"
-            // On pourra aussi entrer dans un état d'action (sauter, dire bonjour) depuis l'etat RL
-            if(uc_ptr_->GetUserCommand().target_mode == int(RobotMotionState::SayHello)){
-                std::cout << "stand up success" << std::endl;
-                std::cout << "Switching to 'Say Hello' state" << std::endl;
-                return StateName::kSayHello;
-            }
-
             // Si on souhaite entrer en RL
             if(uc_ptr_->GetUserCommand().target_mode == int(RobotMotionState::RLControlMode)){
                 std::cout << "stand up success" << std::endl;

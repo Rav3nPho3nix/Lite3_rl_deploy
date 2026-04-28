@@ -94,6 +94,8 @@ class SayHelloState : public StateBase {
         virtual void OnEnter() {
             // DEBUG
             std::cout << "'SayHello' OnEnter" << std::endl;
+            StateBase::msfb_.UpdateCurrentState(RobotMotionState::SayHello);
+            uc_ptr_->SetMotionStateFeedback(StateBase::msfb_);
         }
 
         // Lorsque l'etat se termine
@@ -150,20 +152,8 @@ class SayHelloState : public StateBase {
             // Si on souhaite sortir
             // On rappuie sur le meme bouton
             if (uc_ptr_->GetUserCommand().target_mode == int(RobotMotionState::ExitSayHello)) {
-                // Si l'etat precedent est RL
-                if (data_ptr_->previous_state == StateName::kRLControl) {
-                    std::cout << "Switching to 'RLControl' state" << std::endl;
-                    return StateName::kRLControl;
-                }
-                // Sinon si l'etat precedent est StandUp
-                if (data_ptr_->previous_state == StateName::kStandUp) {
-                    std::cout << "Switching to 'StandUp' state" << std::endl;
-                    return StateName::kStandUp;
-                }
-                // Sinon (securite)
-                else {
-                    return StateName::kJointDamping;
-                }
+                // On revient en RL
+                return StateName::kRLControl;
             }
             
             // Laisser l'action
