@@ -108,6 +108,11 @@ private:
             case StateName::kJointDamping:{
                 return joint_damping_controller_;
             }
+
+            case StateName::kSayHello: {
+                return say_hello_controller_;
+            }
+
             default:{
                 std::cerr << "error state name" << std::endl;
             }

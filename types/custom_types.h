@@ -17,6 +17,8 @@ namespace types{
 
         // Etat du "dire bonjour"
         SayHello = 7,
+        // Etat pour sortir du "dire bonjour"
+        ExitSayHello = 8,
     };
 
     enum StateName{

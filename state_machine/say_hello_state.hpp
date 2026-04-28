@@ -4,11 +4,9 @@
 
 #include "state_base.h"
 
+// "Dire bonjour" est une action qui se réalise tant que l'on ne l'arrete pas
 class SayHelloState : public StateBase {
     private:
-        // Temps actuel
-        // float t;
-
         // Temporaire
         VecXf init_joint_pos_, init_joint_vel_, current_joint_pos_, current_joint_vel_;
         float time_stamp_record_, run_time_;
@@ -71,7 +69,7 @@ class SayHelloState : public StateBase {
             theta = LimitNumber(theta, cp_ptr_->fl_joint_lower_(2), cp_ptr_->fl_joint_upper_(2));
             return theta;
         }
-        //////////////////////////////////::
+        //////////////////////////////////
 
     public:
 
@@ -95,11 +93,14 @@ class SayHelloState : public StateBase {
         // Lorsque l'etat commence
         virtual void OnEnter() {
             // DEBUG
-            std::cout << "Finished 'SayHello' OnEnter" << std::endl;
+            std::cout << "'SayHello' OnEnter" << std::endl;
         }
 
         // Lorsque l'etat se termine
-        virtual void OnExit() {}
+        virtual void OnExit() {
+            // DEBUG
+            std::cout << "'SayHello' OnExit" << std::endl;
+        }
 
         // Lorsque l'etat s'execute
         virtual void Run() {
@@ -146,16 +147,26 @@ class SayHelloState : public StateBase {
 
         // Prochain etat
         virtual StateName GetNextStateName() {
-            // Action terminee
-            // Si le temps est passe
+            // Si on souhaite sortir
+            // On rappuie sur le meme bouton
+            if (uc_ptr_->GetUserCommand().target_mode == int(RobotMotionState::ExitSayHello)) {
                 // Si l'etat precedent est RL
-                    // return StateName::kRLControl;
-                // Sinon
-                    // return StateName::kStandUp;
+                if (data_ptr_->previous_state == StateName::kRLControl) {
+                    std::cout << "Switching to 'RLControl' state" << std::endl;
+                    return StateName::kRLControl;
+                }
+                // Sinon si l'etat precedent est StandUp
+                if (data_ptr_->previous_state == StateName::kStandUp) {
+                    std::cout << "Switching to 'StandUp' state" << std::endl;
+                    return StateName::kStandUp;
+                }
+                // Sinon (securite)
+                else {
+                    return StateName::kJointDamping;
+                }
+            }
             
-                
-            // Temporaire
-            // Action non terminee
+            // Laisser l'action
             return StateName::kSayHello;
         }
 };

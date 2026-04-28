@@ -78,6 +78,10 @@ public:
         while (start_thread_flag_) {
             // std::cout << "time: " << current_time << " " << forward_time_record << std::endl;
             std::cout << "[Keyboard] Running..." << std::endl;
+
+            // DEBUG
+            std::cout << usr_cmd_.target_mode << std::endl;
+
             if(read(STDIN_FILENO, &input, 1) != -1){
                 double current_time = GetCurrentTimeStamp();
                 // std::lock_guard<std::mutex> lock(mtx_);  // 修改 usr_cmd_ 和读取 msfb_
@@ -146,6 +150,14 @@ public:
                         ClipNumber(usr_cmd_.side_vel_scale, -1., 1.);
                         ClipNumber(usr_cmd_.turnning_vel_scale, -1., 1.);
                     break;
+
+                    // Actions lorsqu'on est dans "dire bonjour"
+                    case RobotMotionState::SayHello:
+                        if (input == 'h') {
+                            usr_cmd_.target_mode = int(RobotMotionState::ExitSayHello);
+                        }
+                        break;
+
                     default:
                         break;
                 }
