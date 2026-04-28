@@ -1,4 +1,3 @@
-[简体中文](./README.md)
 
 [![Discord](https://img.shields.io/badge/-Discord-5865F2?style=flat&logo=Discord&logoColor=white)](https://discord.gg/gdM9mQutC8)
 Please go through the whole process on a Ubuntu system.
