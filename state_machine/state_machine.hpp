@@ -15,6 +15,8 @@
 #include "standup_state.hpp"
 #include "joint_damping_state.hpp"
 
+#include "say_hello_state.hpp"
+
 // #ifdef USE_ONNX
 //     #include "rl_control_state_onnx.hpp"
 // #else   
@@ -48,7 +50,7 @@ private:
     std::shared_ptr<StateBase> rl_controller_;
     std::shared_ptr<StateBase> joint_damping_controller_;
 
-    // Pointeur de mon etat de "dire bonjour"
+    // Controller de "dire bonjour"
     std::shared_ptr<StateBase> say_hello_controller_;
 
     StateName current_state_name_, next_state_name_;
@@ -106,13 +108,6 @@ private:
             case StateName::kJointDamping:{
                 return joint_damping_controller_;
             }
-
-            // Switch vers l'etat "dire bonjour"
-            case StateName::kSayHello:{
-                return say_hello_controller_;
-            }
-
-
             default:{
                 std::cerr << "error state name" << std::endl;
             }
@@ -169,10 +164,11 @@ public:
         //     rl_controller_ = std::make_shared<RLControlState>(robot_type, "rl_control", data_ptr);
         // #endif
         rl_controller_ = std::make_shared<RLControlStateONNX>(robot_type, "rl_control", data_ptr);
-        
-
 
         joint_damping_controller_ = std::make_shared<JointDampingState>(robot_type, "joint_damping", data_ptr);
+
+        // Controller de "dire bonjour"
+        say_hello_controller_ = std::make_shared<SayHelloState>(robot_type, "say_hello", data_ptr);
 
         current_controller_ = idle_controller_;
         current_state_name_ = kIdle;
