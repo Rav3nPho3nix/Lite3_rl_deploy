@@ -14,6 +14,9 @@ namespace types{
         JointDamping    = 2,
 
         RLControlMode   = 6,
+
+        // Etat du "dire bonjour"
+        SayHello = 7,
     };
 
     enum StateName{
