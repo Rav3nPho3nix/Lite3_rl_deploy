@@ -127,6 +127,11 @@ public:
                             turnning_time_record = current_time;
                         }
 
+                        // Si on passe en "dire bonjour" depuis RL
+                        if (input == 'h') {
+                            usr_cmd_.target_mode = int(RobotMotionState::SayHello);
+                        }
+
 
                         if(current_time - forward_time_record > 300.) usr_cmd_.forward_vel_scale = 0;
                         if(current_time - side_time_record > 300.) usr_cmd_.side_vel_scale = 0;

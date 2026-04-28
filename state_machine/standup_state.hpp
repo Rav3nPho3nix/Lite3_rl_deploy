@@ -140,6 +140,8 @@ public:
         if(run_time_ - time_stamp_record_ <= 2.*stand_duration_){
             return StateName::kStandUp;
         }else{
+            // Entre toujours dans l'etat RL
+            // On pourra entrer dans un état "d'action temporelle" (sauter, dire bonjour) depuis l'etat RL
             if(uc_ptr_->GetUserCommand().target_mode == int(RobotMotionState::RLControlMode)){
                 return StateName::kRLControl;
                 std::cout << "stand up success" << std::endl;
