@@ -15,7 +15,7 @@ sudo mv backward.hpp /usr/include
 
 # Dependency install (python3.10)
 pip install pybullet "numpy < 2.0" mujoco
-git clone --recurse-submodule https://github.com/DeepRoboticsLab/Lite3_rl_deploy.git
+git clone --recurse-submodule https://github.com/Rav3nPho3nix/Lite3_rl_deploy.git
 
 # compile
 mkdir build && cd build
