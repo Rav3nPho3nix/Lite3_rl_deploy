@@ -1,3 +1,21 @@
+Les joints sont stockés dans 4 vector 3d de ce type:<br>
+[ x hanche, y hanche, genoux ]
+
+Dans cet ordre:<br>
+<pre>Avant Gauche    -    Avant Droit<br>
+Arriere Gauche  -  Arriere Droit<br></pre>
+
+<br>
+Ainsi que les limites des joints du robot:
+<pre>Limites basses: -0.530, -3.50, 0.349;
+Limites hautes: 0.530, 0.320, 2.80;</pre>
+
+Toutes les limites sont disponibles dans [ce fichier](/state_machine/parameters/lite3_control_parameters.cpp).<br>
+
+
+En dessous de cette ligne se trouve la documentation du repo github original.
+
+-------------------------------------------------------
 
 [![Discord](https://img.shields.io/badge/-Discord-5865F2?style=flat&logo=Discord&logoColor=white)](https://discord.gg/gdM9mQutC8)
 Please go through the whole process on a Ubuntu system.

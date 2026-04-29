@@ -83,6 +83,24 @@ private:
         }
     }
 
+
+    // Verifie que le robot soit (presque) a l'arret
+    // vrai = (presque) a l'arret
+    // faux = en mouvement
+    bool IsRobotStill(float vel_threshold = 0.1f, float omega_threshold = 0.1f) {
+        // Verification cote commande utilisateur
+        auto cmd = uc_ptr_->GetUserCommand();
+        bool cmd_still = (fabs(cmd.forward_vel_scale)  < vel_threshold) &&
+                        (fabs(cmd.side_vel_scale)      < vel_threshold) &&
+                        (fabs(cmd.turnning_vel_scale)  < vel_threshold);
+
+        // Verification vitesse angulaire reelle du robot
+        Vec3f omega = ri_ptr_->GetImuOmega();
+        bool imu_still = (omega.norm() < omega_threshold);
+
+        return cmd_still && imu_still;
+    }
+
 public:
     RLControlStateONNX(const RobotType& robot_type, const std::string& state_name, 
         std::shared_ptr<ControllerData> data_ptr):StateBase(robot_type, state_name, data_ptr){
@@ -135,8 +153,17 @@ public:
     virtual StateName GetNextStateName() {
         // Si on souhaite entrer dans le mode "dire bonjour"
         if(uc_ptr_->GetUserCommand().target_mode == int(RobotMotionState::SayHello)){
-            std::cout << "Switching to 'Say Hello' state" << std::endl;
-            return StateName::kSayHello;
+            // Si le robot est quasi a l'arret
+            if (IsRobotStill()) {
+                std::cout << "Switching to 'Say Hello' state" << std::endl;
+                return StateName::kSayHello;
+            }
+            // Sinon un message dans la console
+            else {
+                std::cout << "The lite3 is too fast to enter 'Say Hello' mode" << std::endl;
+                // On remet au mode 'RLControl' pour eviter l'appui infini sur 'h'
+                uc_ptr_->SetMotionStateFeedback(StateBase::msfb_);
+            }
         }
         // Sinon on reste en RL
         return StateName::kRLControl;

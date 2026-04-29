@@ -76,4 +76,10 @@ public:
 
     // std::string tumbler_policy_path_;
     // Vec3f tumbler_policy_p_gain_, tumbler_policy_d_gain_;
+
+    // Temps necessaire pour que le robot se mette en place pour 'dire bonjour'
+    float say_hello_ready_position_duration_ = 1;
+
+    // Temps necessaire pour chaque partie de l'animation
+    float say_hello_animation_frame_duration_ = 3;
 };
