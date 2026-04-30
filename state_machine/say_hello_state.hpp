@@ -2,8 +2,11 @@
 // Cree par Giuliano CAPITANO
 // Permet d'effectuer l'action de "dire bonjour" selon le temps
 
+#define DEBUG 0
+
 #include "state_base.h"
 #include <array>
+
 
 // "Dire bonjour" est une action qui se réalise tant que l'on ne l'arrete pas
 
@@ -171,12 +174,7 @@ class SayHelloState : public StateBase {
 
                 float side = (k == 0) ? 1.f : -1.f;
 
-                if (k == 0) {
-                    target(hip_x) = 0.4f;
-                }
-                else {
-                    target(hip_x) = -0.4f;
-                }
+                target(hip_x) = side * 0.4f;
 
                 // Decalage pour prendre appui au sol plus proche du cente du corps
                 // -0.8 OK avec offset patte arriere = -0.3
@@ -231,8 +229,10 @@ class SayHelloState : public StateBase {
                         animation_time_stamp = run_time_;
                         // Fige la pose courante
                         animation_holding_position = current_joint_pos_;
+#if(DEBUG)
                         std::cout << "Knee lift finished" << std::endl;
                         std::cout << "Starting animation" << std::endl;
+#endif
                     }
                 } break;
 
@@ -306,8 +306,11 @@ class SayHelloState : public StateBase {
 
         // Lorsque l'etat commence
         virtual void OnEnter() {
-            // DEBUG
+
+#if(DEBUG)
             std::cout << "'SayHello' OnEnter" << std::endl;
+#endif
+
             GetRobotJointValue();
             RecordJointData();
 
@@ -322,8 +325,9 @@ class SayHelloState : public StateBase {
 
         // Lorsque l'etat se termine
         virtual void OnExit() {
-            // DEBUG
+#if(DEBUG)
             std::cout << "'SayHello' OnExit" << std::endl;
+#endif
         }
 
         void Run() {
@@ -345,13 +349,9 @@ class SayHelloState : public StateBase {
                     else {
                         state = StateMachineSteps::POS;
                         RecordJointData();
-                        // DEBUG
+#if(DEBUG)
                         std::cout << "LayingDown finished" << std::endl;
-
-                        // // Temporaire
-                        // animation_holding_position = current_joint_pos_;
-                        // state = StateMachineSteps::ANIM;
-                        // std::cout << "DEBUG : freeze after this point" << std::endl;
+#endif
                     }
                 } break;
 
@@ -368,15 +368,14 @@ class SayHelloState : public StateBase {
                         animation_time_stamp = run_time_;  // ← indispensable
                         q  = current_joint_pos_;
                         dq = VecXf::Zero(12);
-                        // DEBUG
+#if(DEBUG)
                         std::cout << "Positioning finished" << std::endl;
+#endif
                     }                    
                 } break;
                 
                 // Si on fait l'animation
                 case StateMachineSteps::ANIM: {
-                    // // DEBUG
-                    // std::cout << "DEBUG : in Animaiting" << std::endl;
                     Animating(q, dq);
                 } break;
 
@@ -388,8 +387,9 @@ class SayHelloState : public StateBase {
                     }
                     else {
                         state = StateMachineSteps::END;
-                        // DEBUG
+#if(DEBUG)
                         std::cout << "Rising finished" << std::endl;
+#endif
                     }
                 } break;
 
