@@ -77,9 +77,14 @@ public:
     // std::string tumbler_policy_path_;
     // Vec3f tumbler_policy_p_gain_, tumbler_policy_d_gain_;
 
-    // Temps necessaire pour que le robot se mette en place pour 'dire bonjour'
-    float say_hello_ready_position_duration_ = 1;
+    // Temps des differentes parties du mouvements 'dire bonjour'
+    float say_hello_laying_down_duration_ = 1.f;
+    float say_hello_positioning_duration_ = 1.f;
 
-    // Temps necessaire pour chaque partie de l'animation
-    float say_hello_animation_frame_duration_ = 3;
+    // Hauteurs souhaitees pour 'dire bonjour'
+    float say_hello_height_target_ = 0.1f;
+    float say_hello_front_height_target_ = 0.33f;
+
+    // Decalage necessaire pour le 'dire bonjour' aifin que le robot se redresse droit
+    float say_hello_hip_y_offset_ = -1.f;
 };
