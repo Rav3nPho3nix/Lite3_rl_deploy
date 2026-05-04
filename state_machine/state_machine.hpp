@@ -127,9 +127,9 @@ public:
         #ifdef BUILD_SIMULATION
             uc_ptr_ = std::make_shared<KeyboardInterface>();
         #else
-            uc_ptr_ = std::make_shared<RetroidGamepadInterface>(12121);
+            // uc_ptr_ = std::make_shared<RetroidGamepadInterface>(12121);
         #endif
-        // uc_ptr_ = std::make_shared<KeyboardInterface>();
+        uc_ptr_ = std::make_shared<KeyboardInterface>();
         // uc_ptr_ = std::make_shared<RetroidGamepadInterface>(12121);
         if(robot_type == RobotType::Lite3){
             urdf_path = GetAbsPath()+"/../third_party/URDF_model/lite3_urdf/Lite3/urdf/Lite3.urdf";

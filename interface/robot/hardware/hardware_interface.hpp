@@ -18,10 +18,17 @@ private:
     VecXf joint_pos_, joint_vel_, joint_tau_;
     std::thread hw_thread_;
 public:
-    HardwareInterface(const std::string& robot_name, 
-                        int local_port=43897, 
-                        std::string robot_ip="192.168.2.1",
-                        int robot_port=43893):RobotInterface(robot_name, 12){
+    HardwareInterface(const std::string& robot_name,
+                        // // V1 
+                        // int local_port=43897, 
+                        // std::string robot_ip="192.168.2.1",
+                        // int robot_port=43893):
+
+                        // V2
+                        // int local_port=43893, 
+                        std::string robot_ip="192.168.1.103",
+                        int robot_port=43897):
+                        RobotInterface(robot_name, 12){
         std::cout << robot_name << " is using Lite3 Hardware Interface" << std::endl;
         // receiver_ = new Receiver(local_port);
         receiver_ = new Receiver();
