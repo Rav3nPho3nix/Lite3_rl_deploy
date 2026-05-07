@@ -24,10 +24,15 @@ public:
                         // std::string robot_ip="192.168.2.1",
                         // int robot_port=43893):
 
-                        // V2
-                        // int local_port=43893, 
-                        std::string robot_ip="192.168.1.103",
-                        int robot_port=43897):
+                        // // V2
+                        // int local_port=43897, 
+                        // std::string robot_ip="192.168.1.103",
+                        // int robot_port=43893):
+
+                        // V3
+                        int local_port=43897,
+                        std::string robot_ip="192.168.1.120",
+                        int robot_port=43893):                    
                         RobotInterface(robot_name, 12){
         std::cout << robot_name << " is using Lite3 Hardware Interface" << std::endl;
         // receiver_ = new Receiver(local_port);
