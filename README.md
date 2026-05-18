@@ -135,7 +135,6 @@ flowchart LR
     n6@{ shape: rounded}
     n7@{ shape: rounded}
     n2@{ shape: rounded}
-    style n3 color:#000000
     linkStyle 2 stroke:#D50000,fill:none
     linkStyle 3 stroke:#D50000,fill:none
     linkStyle 6 stroke:#D50000,fill:none
