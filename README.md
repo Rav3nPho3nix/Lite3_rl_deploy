@@ -7,7 +7,16 @@ Leur série de vidéos sur [YouTube](https://youtube.com/playlist?list=PLy9YHJvM
 Ce repo est principalement orienté vers le déploiement de mouvements réalisés en Reinforcement Learning grâce au repo suivant : https://github.com/Rav3nPho3nix/rl_training.
 
 Cependant il est possible d'utiliser ce repo afin que le robot réalise une actions 'hard codée', c'est à dire que le robot doit simplement faire selon le temps des mouvements qui seront toujours identiques.
-Ceci passe par une légère modification de la [machine à états](#machine-à-états) afin de prendre en compte ce genre d'actions.
+Ceci passe par des modifications de la [machine à états](#machine-à-états-et-sous-états) afin de prendre en compte ce genre d'actions.
+
+# Sommaire
+
+- [Description](#description)
+- [Installation](#installation)
+- [Sim-to-Sim](#sim-to-sim)
+- [Sim-to-Real]()
+
+# Description
 
 ## Mes ajouts
 
@@ -22,7 +31,7 @@ Le 'saut vers l'avant' a été longtemps entrainé mais je n'ai pas obtenu de r�
 
 'Se mettre en équilibre' [EN COURS]
 
-## Fonctionnement général des joints du Lite3
+## Contrôle des joints du Lite3
 
 Les joints du robot sont stockés dans une tableau de 12 cases, chacune case étant la valeur d'un joint du robot.
 
@@ -46,7 +55,7 @@ Les joints possèdent les limites suivantes :
 
 <em>Toutes les limites sont disponibles dans [ce fichier](/state_machine/parameters/lite3_control_parameters.cpp).</em>
 
-## Machine à états
+## Machine à états & sous-états
 
 Ce programme se base sur une machine à états afin de spécifier quel action le robot doit faire.
 
@@ -69,24 +78,172 @@ Voici le graphe mis à jour avec les états supplémentaires permettant de lance
 ```mermaid
 ---
 config:
-  layout: fixed
+  layout: dagre
 ---
 flowchart LR
     A("Idle") --> B("StandUp")
     B --> C("RL") & D("JointDamping")
     C --> D & n1["SayHello"]
     D --> A
-    n1 --> n2["ExitSayHello"] & D
-    n2 --> C & D
+    n1 --> n2["ExitSayHello"] & D & C
+    n2 --> n1 & D
 
     n1@{ shape: rounded}
     n2@{ shape: rounded}
     linkStyle 2 stroke:#D50000,fill:none
     linkStyle 3 stroke:#D50000,fill:none
     linkStyle 7 stroke:#D50000,fill:none
-    linkStyle 9 stroke:#D50000
+    linkStyle 9 stroke:#D50000,fill:none
 ```
 
 Les nouveaux états sont les suivants :
 - SayHello : état de 'dire bonjour' qui le fait indéfiniment tant que l'utilisateur ne l'arrête pas
-- ExitSayHello : état passager qui quitte 'dire bonjour' et redonne la main à l'état 'RL'
+- ExitSayHello : état passager qui initie la sortie de 'Say Hello' pour plus tard repasser à 'RL'
+
+On remarque des relations complexes entre 'RL', 'SayHello' et 'ExitSayHello'. C'est normal car 'SayHello' est plus complexe qu'un simple état. Je dis donc découper 'SayHello' en plusieurs sous-états qui eux-mêmes intéragissent avec des sous-états ou des états externes.
+
+Voici le graphe des sous-etats de 'SayHello' :
+
+```mermaid
+---
+config:
+  layout: dagre
+---
+flowchart LR
+ subgraph s1["SayHello"]
+        n3["LAY<br>"]
+        n4@{ label: "POS<br><span style=\"color:\">Dévérouille ExitSayHello</span>" }
+        n5["ANIM"]
+        n6["RISE"]
+        n7["END"]
+  end
+    A("Idle") --> B("StandUp")
+    B --> C("RL") & D("JointDamping")
+    C --> D & n3
+    D --> A
+    n2["ExitSayHello"] --> D & n6
+    n3 --> n4
+    n4 --> n5
+    n5 --> n5
+    n6 --> n7
+    n7 --> C
+    s1 --> D
+
+    n3@{ shape: rounded}
+    n4@{ shape: rounded}
+    n5@{ shape: rounded}
+    n6@{ shape: rounded}
+    n7@{ shape: rounded}
+    n2@{ shape: rounded}
+    style n3 color:#000000
+    linkStyle 2 stroke:#D50000,fill:none
+    linkStyle 3 stroke:#D50000,fill:none
+    linkStyle 6 stroke:#D50000,fill:none
+    linkStyle 13 stroke:#D50000,fill:none
+```
+
+'SayHello' se fait en plusieurs étapes :
+- LAY : Le robot se met sur le ventre afin d'être en position 'neutre' par rapport à l'état précédent
+- POS : Le robot se met en position pour l'animation & Déverouille 'ExitSayHello' pour permettre de sortir de 'SayHello'<br>
+<em>Si on autorise l'utilisateur à sortir de 'SayHello' brutalement pendant que le robot se couche sur le ventre ou est couché, le robot voudra rapidement se relever et cela le fera sauter</em>
+- ANIM : Le robot réalise son animation
+- RISE : Le robot se relève afin de sortir de 'SayHello' en sécurité<br>
+<em>Lorsque l'utilisateur appuie sur le bouton pour sortir de 'SayHello', l'état 'éphémère' 'ExitSayHello' est appellé (à condition qu'il soit dévérouillé), qui lui-même donne la main à 'RISE' pour forcer la remontée du robot avant de rendre la main à 'RL'</em>
+- END : Le robot a terminé sa remontée, il donne la main à 'RL'
+
+Ce stratagème permet au robot d'entrer et de sortir de l'animation en toute sécurité.
+
+# Installation
+```bash
+sudo apt-get install libdw-dev
+wget https://raw.githubusercontent.com/bombela/backward-cpp/master/backward.hpp
+sudo mv backward.hpp /usr/include
+
+git clone --recurse-submodule https://github.com/Rav3nPho3nix/Lite3_rl_deploy.git
+```
+
+# Sim-to-Sim
+
+Le déploiement Sim-to-Sim se fait via 2 applications :
+- [Simulation 3d](#simulation-3d) : PyBullet ou MuJoco
+- [Interface de contrôle](#interface-de-contrôle) : utilisation du clavier
+Cela nécessite 2 terminaux.
+
+## Dépendances
+```bash
+pip install pybullet "numpy < 2.0" mujoco
+```
+
+## Simulation 3d
+Utilisez PyBullet ou MuJoco au choix :
+```
+# PyBullet
+cd interface/robot/simulation
+python pybullet_simulation.py
+
+# MuJoco
+cd interface/robot/simulation
+python mujoco_simulation.py
+```
+
+## Interface de contrôle
+
+### Compilation
+```bash
+mkdir build
+cd build
+cmake .. -DBUILD_PLATFORM=x86 -DBUILD_SIM=ON -DSEND_REMOTE=OFF
+make -j
+```
+
+### Lancement
+```bash
+./rl_deploy
+```
+### Utilisation
+
+#### Actions :
+
+* r : mise en sécurité
+
+Mode 'Idle' :
+* z : se relever
+
+Mode 'StandUp' :
+* c : passage en mode 'RL'
+
+Mode 'RL' :
+* zqsd : déplacement en mode 'RL'
+* h : passage en 'SayHello'
+
+Mode 'SayHello' :
+* h : passage en 'RL'
+
+# Sim-to-Real
+
+## Interface de contrôle
+
+### Compilation
+
+### Lancement
+
+### Utilisation
+
+Pour clavier : voir dans la [section précédente](#actions-)
+
+Pour manette retroid :
+
+* Appui joystick droit ET joystick gauche EN MEME TEMPS : Mise en sécurité
+
+Mode 'Idle' :
+* y : se relever
+
+Mode 'StandUp' :
+* a : passage en mode 'RL'
+
+Mode 'RL' :
+* joysticks : déplacements
+* x : passage en 'SayHello'
+
+Mode 'SayHello' :
+* x : passage en mode 'RL'

@@ -89,7 +89,23 @@ void RetroidGamepadInterface::TransformRetroidToUserCommand(){
                     usr_cmd_.target_mode = int(RobotMotionState::RLControlMode);
                 }
                 break;
-            
+
+            // Si on est en RL
+            case RobotMotionState::RLControlMode:
+                // Si on veut passer en 'SayHello'
+                if (rt_keys_.X && !rt_keys_record_.X) {
+                    usr_cmd_.target_mode = int(RobotMotionState::SayHello);
+                }
+                break;
+
+            // Si on est en SayHello
+            case RobotMotionState::SayHello:
+                // Si on veut passer en 'RL'
+                if (rt_keys_.X && !rt_keys_record_.X) {
+                    usr_cmd_.target_mode = int(RobotMotionState::RLControlMode);
+                }
+                break;
+
             default:
                 break;
             }

@@ -16,9 +16,9 @@
 
 #include "state_base.h"
 #include "policy_runner_base.hpp"
-#include "lite3_test_policy_runner_onnx.h"
-
-
+// #include "lite3_test_policy_runner_onnx.h"
+#include "lite3_flat_policy_runner_onnx.h"
+#include "lite3_rear_balance_policy_runner_onnx.h"
 
 class RLControlStateONNX : public StateBase
 {
@@ -27,9 +27,9 @@ private:
     int state_run_cnt_;
 
     std::shared_ptr<PolicyRunnerBase> policy_ptr_;
-    std::shared_ptr<Lite3TestPolicyRunnerONNX> test_policy_;
-
-
+    // std::shared_ptr<Lite3TestPolicyRunnerONNX> test_policy_;
+    std::shared_ptr<Lite3FlatPolicyRunnerONNX> flat_policy_;
+    // std::shared_ptr<Lite3RearBalancePolicyRunnerONNX> rear_balance_policy_;
     
     std::thread run_policy_thread_;
     bool start_flag_ = true;
@@ -105,8 +105,11 @@ public:
     RLControlStateONNX(const RobotType& robot_type, const std::string& state_name, 
         std::shared_ptr<ControllerData> data_ptr):StateBase(robot_type, state_name, data_ptr){
         std::memset(&rbs_, 0, sizeof(rbs_));
-        test_policy_ = std::make_shared<Lite3TestPolicyRunnerONNX>("test_onnx");
-        policy_ptr_ = test_policy_;
+        // test_policy_ = std::make_shared<Lite3TestPolicyRunnerONNX>("test_onnx");
+        flat_policy_ = std::make_shared<Lite3FlatPolicyRunnerONNX>("flat_onnx");
+        // rear_balance_policy_ = std::make_shared<Lite3RearBalancePolicyRunnerONNX>("rear_balance_onnx");
+
+        policy_ptr_ = flat_policy_;
         if(!policy_ptr_){
             std::cerr << "[ERROR] Failed to initialize ONNX policy runner." << std::endl;
             exit(0);
@@ -165,6 +168,7 @@ public:
                 uc_ptr_->SetMotionStateFeedback(StateBase::msfb_);
             }
         }
+
         // Sinon on reste en RL
         return StateName::kRLControl;
     }

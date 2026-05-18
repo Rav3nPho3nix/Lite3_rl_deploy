@@ -145,7 +145,12 @@ endif()
 # Building the policy runner as a separate library means that editing the
 # policy implementation only recompiles this one translation unit and
 # re-links, without touching the state machine or main.cpp object files.
-add_library(run_policy STATIC run_policy/lite3_test_policy_runner_onnx.cpp)
+add_library(run_policy STATIC 
+  run_policy/lite3_test_policy_runner_onnx.cpp
+  run_policy/lite3_flat_policy_runner_onnx.cpp
+  run_policy/lite3_rear_balance_policy_runner_onnx.cpp
+)
+
 target_include_directories(run_policy PUBLIC
     run_policy
     ${THIRD_PARTY}/eigen/
