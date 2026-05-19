@@ -112,6 +112,28 @@ config:
 flowchart LR
  subgraph s1["SayHello"]
         n3["LAY<br>"]
+        n4@{ label: "POS" }
+        n5["ANIM"]
+        n6["RISE"]
+        n7["END"]
+  end
+    n3 --> n4
+    n4 --> n5
+    n5 --> n5
+    n6 --> n7
+
+```
+
+Que l'on peut ensuite connecter aux autres états :
+
+```mermaid
+---
+config:
+  layout: dagre
+---
+flowchart LR
+ subgraph s1["SayHello"]
+        n3["LAY<br>"]
         n4@{ label: "POS<br><span style=\"color:\">Dévérouille ExitSayHello</span>" }
         n5["ANIM"]
         n6["RISE"]
