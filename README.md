@@ -93,7 +93,7 @@ flowchart LR
     linkStyle 2 stroke:#D50000,fill:none
     linkStyle 3 stroke:#D50000,fill:none
     linkStyle 7 stroke:#D50000,fill:none
-    linkStyle 9 stroke:#D50000,fill:none
+    linkStyle 10 stroke:#D50000,fill:none
 ```
 
 Les nouveaux états sont les suivants :
