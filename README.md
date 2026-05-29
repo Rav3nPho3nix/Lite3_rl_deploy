@@ -14,7 +14,7 @@ Ceci passe par des modifications de la [machine à états](#machine-à-états-et
 - [Description](#description)
 - [Installation](#installation)
 - [Sim-to-Sim](#sim-to-sim)
-- [Sim-to-Real]()
+- [Sim-to-Real](#sim-to-real)
 
 # Description
 
@@ -93,7 +93,7 @@ flowchart LR
     linkStyle 2 stroke:#D50000,fill:none
     linkStyle 3 stroke:#D50000,fill:none
     linkStyle 7 stroke:#D50000,fill:none
-    linkStyle 10 stroke:#D50000,fill:none
+    linkStyle 9 stroke:#D50000,fill:none
 ```
 
 Les nouveaux états sont les suivants :
@@ -103,28 +103,6 @@ Les nouveaux états sont les suivants :
 On remarque des relations complexes entre 'RL', 'SayHello' et 'ExitSayHello'. C'est normal car 'SayHello' est plus complexe qu'un simple état. Je dis donc découper 'SayHello' en plusieurs sous-états qui eux-mêmes intéragissent avec des sous-états ou des états externes.
 
 Voici le graphe des sous-etats de 'SayHello' :
-
-```mermaid
----
-config:
-  layout: dagre
----
-flowchart LR
- subgraph s1["SayHello"]
-        n3["LAY<br>"]
-        n4@{ label: "POS" }
-        n5["ANIM"]
-        n6["RISE"]
-        n7["END"]
-  end
-    n3 --> n4
-    n4 --> n5
-    n5 --> n5
-    n6 --> n7
-
-```
-
-Que l'on peut ensuite connecter aux autres états :
 
 ```mermaid
 ---
@@ -244,11 +222,59 @@ Mode 'SayHello' :
 
 ## Interface de contrôle
 
+Pour le déploiement en réel, le contrôle peut se faire par clavier ou par manette. Pour se faire, il faut modifier le fichier [state_machine](/state_machine/state_machine.hpp) à la ligne 131.
+
 ### Compilation
+
+Pour compiler sur le Lite3, il faut déja envoyer le dépôt sur l'ordinateur embarqué via `scp` puis ensuite le compiler.
+
+Pour mon Lite3, l'ip de son ordinateur embarqué est `192.168.1.120` et l'utilisateur / mot de passe est : `firefly:firefly`.
+<em>Si cela ne fonctionne pas pour vous, referez vous à [cette documentation](https://github.com/DeepRoboticsLab/Lite3_MotionSDK/blob/main/README.md#4-identify-the-motion-host-address-username-and-code)</em>
+
+Connectez vous en ssh sur l'ordinateur embarqué et modifiez le fichier `~/jy_exe/conf/network.conf` avec le contenu suivant :
+```
+ip = '192.168.1.120'
+target_port = 43897
+local_port = 43893
+
+ips = ['192.168.1.103']
+ports = [43897]
+```
+
+Placez vous dans le répertoire parent à `Lite3_rl_deploy` sur votre ordinateur de développement :
+
+```bash
+# Copie du code via scp
+scp -r ~/Lite3_rl_deploy firefly@192.168.1.120:~/
+```
+
+Une fois fait, connectez vous en ssh sur l'ordinateur embarqué du Lite3 :
+```bash
+ssh firefly@192.168.1.120
+```
+
+Compilez le programme :
+```bash
+cd Lite3_rl_deploy
+mkdir build
+cd build
+cmake .. -DBUILD_PLATFORM=arm -DBUILD_SIM=OFF -DSEND_REMOTE=OFF
+make -j
+```
 
 ### Lancement
 
+Executez simplement le fichier `rl_deploy` :
+```bash
+./rl_deploy
+```
+
 ### Utilisation
+
+<b><u>ATTENTION :</u> Avant de passer en mode `Idle`, il est NECESSAIRE de placer les pattes du Lite3 comme ceci : </b>
+
+![](image.png)
+
 
 Pour clavier : voir dans la [section précédente](#actions-)
 
