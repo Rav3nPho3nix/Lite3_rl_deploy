@@ -29,7 +29,7 @@ J'ai réalisé pour mon stage 3 actions :
 
 Le 'saut vers l'avant' a été longtemps entrainé mais je n'ai pas obtenu de résultat concluant. Son code est présent dans le repo [rl_training](https://github.com/Rav3nPho3nix/rl_training) mais n'a pas été déployé.
 
-'Se mettre en équilibre' [EN COURS]
+'Se mettre en équilibre' a été assez vite réalisé sur IA et fonctionne très bien, mais lors de la validation sous MuJoCo, le robot ne se comporte pas correctement et passe en sécurité à cause de mouvements brusques. Il m'est impossible de le déployer sur le vrai robot. Son code est aussi présent dans [rl_training](https://github.com/Rav3nPho3nix/rl_training).
 
 ## Contrôle des joints du Lite3
 
